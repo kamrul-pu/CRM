@@ -1,6 +1,10 @@
 from django.urls import path
-from .views import home,product,customer,createOrder,updateOrder,createCustomer,deleteOrder
+from .views import home,product,customer,createOrder,updateOrder,createCustomer,deleteOrder,loginPage,registerPage,userLogout
+
 urlpatterns = [
+    path('login/',loginPage,name='login'),
+    path('register/',registerPage,name='register'),
+    path('logout/',userLogout,name='logout'),
     path('',home,name='home'),
     path('product/',product,name='product'),
     path('customer/<int:pk>/',customer,name='customer'),
