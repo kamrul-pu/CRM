@@ -1,0 +1,20 @@
+{% extends 'main.html' %}
+{% block content %}
+
+<div class="row">
+    <div class="col-md-7">
+        <div class="card card-body">
+            <form action="" method="POST">
+                {{form.management_form}}
+                {% for ind in form %}
+                {{ind}}
+                <hr>
+                {% endfor %}
+                {% csrf_token %}
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
