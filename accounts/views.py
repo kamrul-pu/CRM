@@ -4,6 +4,8 @@ from accounts.models import *
 from accounts.forms import *
 #for creating inline formset
 from django.forms import inlineformset_factory
+#Django filter for search filter
+from accounts.filters import OrderFilter
 
 # Create your views here.
 def home(request):
@@ -30,7 +32,10 @@ def customer(request,pk):
     customer = Customer.objects.get(id=pk)
     orders = Order.objects.filter(customer=customer)
     total_orders = orders.count()
-    content = {'title':'Customer','orders':orders,'customer':customer,'total_orders':total_orders}
+    myFilter = OrderFilter(request.GET,queryset=orders)
+    orders = myFilter.qs
+    content = {'title':'Customer','orders':orders,'customer':customer,'total_orders':total_orders,'myFilter':myFilter}
+
     print(customer)
     return render(request,'accounts/customer.html',context=content)
 
