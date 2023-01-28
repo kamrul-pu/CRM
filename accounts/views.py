@@ -47,13 +47,7 @@ def registerPage(request):
         if form.is_valid():
             user = form.save()
             username = form.cleaned_data.get('username')
-            group = Group.objects.get(name='customer')
-            user.groups.add(group)
-            user.save()
-            Customer.objects.create(
-                user = user,
-                email = user.email
-            )
+            # user.save()
             messages.success(request,f"Hello {username}, Account Created Successfully")
             return redirect('login')
     context = {'form':form,'title':'User Creatation Form'}
@@ -180,3 +174,23 @@ def deleteOrder(request,pk):
         return redirect('/')
     context = {'title':'Delete Order','order':order,'item':order}
     return render(request,'accounts/delete.html',context)
+
+
+
+from django.http import HttpResponse  
+# from djangoapp import settings
+from django.conf import settings
+from django.core.mail import send_mail  
+  
+"""email send functions"""
+
+def mail(request):  
+    subject = "Greetings"  
+    msg     = "Congratulations for your success"  
+    to      = "mkamrulh219@gmail.com"  
+    res     = send_mail(subject, msg, settings.EMAIL_HOST_USER, [to])
+    if(res == 1):  
+        msg = "Mail Sent Successfuly"  
+    else:  
+        msg = "Mail could not sent"  
+    return HttpResponse(msg)  
