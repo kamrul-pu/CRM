@@ -42,7 +42,7 @@
             </li>
             {% if request.user.is_authenticated %}
             <li class="nav-item">
-                <a href="" class="btn btn-primary">Hello, {{request.user.username}}</a>
+                <a href="{% url 'account' %}" class="btn btn-primary">Hello, {{request.user.username}}</a>
             </li> &nbsp;
             <li class="nav-item">
                 <a href="{% url 'logout' %}" class="btn btn-primary">Logout</a>

@@ -50,6 +50,10 @@ def registerPage(request):
             group = Group.objects.get(name='customer')
             user.groups.add(group)
             user.save()
+            Customer.objects.create(
+                user = user,
+                email = user.email
+            )
             messages.success(request,f"Hello {username}, Account Created Successfully")
             return redirect('login')
     context = {'form':form,'title':'User Creatation Form'}
@@ -72,9 +76,36 @@ def home(request):
 
     return render(request,'accounts/dashboard.html',context=content)
 
+@login_required
+@allowed_users(allowed_roles='customer')
 def userPage(request):
-    context = {'title':'User Profile'}
+    orders = request.user.customer.order_set.all()
+    print("customer",request.user.customer.profile_pic)
+
+    total_orders = orders.count()
+    delivered = Order.objects.filter(status='Delivered',customer=request.user.customer).count()
+    pending = Order.objects.filter(status='Pending',customer=request.user.customer).count()
+    context = {'title':'User Profile','orders':orders,'total_orders':total_orders,
+    'delivered':delivered,'pending':pending}
     return render(request,'accounts/user.html',context)
+
+@login_required
+@allowed_users(allowed_roles='customer')
+def accountSettings(request):
+    customer = request.user.customer
+    form = CustomerForm(instance=customer)
+    if request.method=='POST':
+        form = CustomerForm(request.POST,request.FILES,instance=customer)
+        if form.is_valid():
+            form.save()
+            print("Profile saved")
+        else:
+            print("Not Saved")
+            # if 'profile_pic' in request.FILES:
+            #     form.profile_pic = request.FILES['profile_pic']
+            # form.save()
+    context = {'title':'Account Update','form':form}
+    return render(request,'accounts/accounts_settings.html',context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
